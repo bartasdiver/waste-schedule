@@ -5,7 +5,7 @@
   "documentation": "https://github.com/bartasdiver/waste-schedule",
   "issue_tracker": "https://github.com/bartasdiver/waste-schedule/issues",
   "codeowners": ["@bartasdiver"],
-  "config_flow": false,
+  "config_flow": true,
   "dependencies": [],
   "requirements": [],
   "iot_class": "local_polling",
