@@ -39,22 +39,25 @@ class WasteCalendarEntity(CalendarEntity):
     @property
     def event(self) -> CalendarEvent | None:
         """Return the next upcoming event."""
-        today = date.today()
-        next_date = get_all_collection_dates(
-            self.schedule.start_date, self.schedule.frequency_weeks, today, months_ahead=1
-        )
-
-        if next_date:
-            next_collection = next_date[0]
-            # Create timezone-aware datetime using local timezone
-            midnight = dt_util.now().replace(hour=0, minute=0, second=0, microsecond=0)
-            event_start = midnight.replace(day=next_collection.day, month=next_collection.month, year=next_collection.year)
-            event_end = event_start.replace(hour=23, minute=59, second=59)
-            return CalendarEvent(
-                start=dt_util.as_utc(event_start),
-                end=dt_util.as_utc(event_end),
-                summary=f"Wywóz: {self.schedule.name}",
+        try:
+            today = date.today()
+            next_date = get_all_collection_dates(
+                self.schedule.start_date, self.schedule.frequency_weeks, today, months_ahead=1
             )
+
+            if next_date:
+                next_collection = next_date[0]
+                # Create timezone-aware datetime using local timezone
+                midnight = dt_util.now().replace(hour=0, minute=0, second=0, microsecond=0)
+                event_start = midnight.replace(day=next_collection.day, month=next_collection.month, year=next_collection.year)
+                event_end = event_start.replace(hour=23, minute=59, second=59, microsecond=999999)
+                return CalendarEvent(
+                    start=dt_util.as_utc(event_start),
+                    end=dt_util.as_utc(event_end),
+                    summary=f"Wywóz: {self.schedule.name}",
+                )
+        except Exception:
+            return None
         return None
 
     async def async_get_events(
