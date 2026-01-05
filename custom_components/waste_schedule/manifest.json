@@ -1,0 +1,13 @@
+{
+  "domain": "waste_schedule",
+  "name": "Waste Schedule",
+  "version": "1.0.0",
+  "documentation": "https://github.com/bartasdiver/waste-schedule",
+  "issue_tracker": "https://github.com/bartasdiver/waste-schedule/issues",
+  "codeowners": ["@bartasdiver"],
+  "config_flow": false,
+  "dependencies": [],
+  "requirements": [],
+  "iot_class": "local_polling",
+  "integration_type": "device"
+}

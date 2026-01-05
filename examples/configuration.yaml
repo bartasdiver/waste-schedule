@@ -1,0 +1,93 @@
+# Przykładowa konfiguracja Waste Schedule dla Home Assistant
+
+# Włączanie integracji (może być wymagane w niektórych wersjach HA)
+waste_schedule:
+
+# Przykładowa automatyzacja - powiadomienie dzień przed wywozem
+automation:
+  - alias: "Powiadomienie: Wywóz odpadów resztkowych"
+    id: "waste_notification_resztkowe"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.odpady_resztkowe_dni_do_wywozu
+        below: 2
+    action:
+      - service: notify.mobile_app_your_phone
+        data:
+          title: "🗑️ Wywóz odpadów"
+          message: "Jutro odbiór odpadów resztkowych! Pamiętaj o wystawieniu pojemnika."
+          data:
+            push:
+              sound: default
+              badge: 1
+
+  - alias: "Powiadomienie: Wywóz plastiku"
+    id: "waste_notification_plastik"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.plastik_dni_do_wywozu
+        below: 2
+    action:
+      - service: notify.mobile_app_your_phone
+        data:
+          title: "♻️ Wywóz plastiku"
+          message: "Jutro odbiór plastiku! Przygotuj żółty pojemnik."
+
+  - alias: "Powiadomienie: Wywóz papieru i szkła"
+    id: "waste_notification_papier_szklo"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.papier_i_szklo_dni_do_wywozu
+        below: 2
+    action:
+      - service: notify.mobile_app_your_phone
+        data:
+          title: "📦 Wywóz papieru i szkła"
+          message: "Jutro odbiór papieru i szkła! Przygotuj pojemniki."
+
+# Grupa sensorów dla łatwego dostępu
+group:
+  waste_schedule_all:
+    name: Harmonogram wywozu odpadów
+    icon: mdi:delete-clock
+    entities:
+      - sensor.odpady_resztkowe_nastepna_data
+      - sensor.odpady_resztkowe_dni_do_wywozu
+      - sensor.plastik_nastepna_data
+      - sensor.plastik_dni_do_wywozu
+      - sensor.papier_i_szklo_nastepna_data
+      - sensor.papier_i_szklo_dni_do_wywozu
+
+# Przykładowy Lovelace dashboard (dodaj do ui-lovelace.yaml lub przez UI)
+#
+# type: vertical-stack
+# title: Harmonogram wywozu odpadów
+# cards:
+#   - type: entities
+#     title: Terminy wywozu
+#     entities:
+#       - entity: sensor.odpady_resztkowe_nastepna_data
+#         icon: mdi:trash-can
+#         name: Resztkowe - następny wywóz
+#       - entity: sensor.odpady_resztkowe_dni_do_wywozu
+#         icon: mdi:calendar-clock
+#         name: Dni do wywozu resztkowych
+#       - entity: sensor.plastik_nastepna_data
+#         icon: mdi:recycle
+#         name: Plastik - następny wywóz
+#       - entity: sensor.plastik_dni_do_wywozu
+#         icon: mdi:calendar-clock
+#         name: Dni do wywozu plastiku
+#       - entity: sensor.papier_i_szklo_nastepna_data
+#         icon: mdi:package-variant
+#         name: Papier/szkło - następny wywóz
+#       - entity: sensor.papier_i_szklo_dni_do_wywozu
+#         icon: mdi:calendar-clock
+#         name: Dni do wywozu papieru/szkła
+#
+#   - type: calendar
+#     entities:
+#       - calendar.odpady_resztkowe_harmonogram
+#       - calendar.plastik_harmonogram
+#       - calendar.papier_i_szklo_harmonogram
+#     title: Kalendarz wywozu odpadów
