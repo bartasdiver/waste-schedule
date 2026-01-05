@@ -46,9 +46,10 @@ class WasteCalendarEntity(CalendarEntity):
 
         if next_date:
             next_collection = next_date[0]
-            # Create timezone-aware datetime
-            event_start = dt_util.start_of_local_day(next_collection)
-            event_end = dt_util.end_of_local_day(next_collection)
+            # Create timezone-aware datetime using local timezone
+            midnight = dt_util.now().replace(hour=0, minute=0, second=0, microsecond=0)
+            event_start = midnight.replace(day=next_collection.day, month=next_collection.month, year=next_collection.year)
+            event_end = event_start.replace(hour=23, minute=59, second=59)
             return CalendarEvent(
                 start=dt_util.as_utc(event_start),
                 end=dt_util.as_utc(event_end),
@@ -70,9 +71,10 @@ class WasteCalendarEntity(CalendarEntity):
 
         events = []
         for collection_date in all_dates:
-            # Create timezone-aware datetime using HA's default timezone
-            event_start = dt_util.start_of_local_day(collection_date)
-            event_end = dt_util.end_of_local_day(collection_date)
+            # Create timezone-aware datetime using local timezone
+            midnight = dt_util.now().replace(hour=0, minute=0, second=0, microsecond=0)
+            event_start = midnight.replace(day=collection_date.day, month=collection_date.month, year=collection_date.year)
+            event_end = event_start.replace(hour=23, minute=59, second=59)
 
             # Convert to UTC for comparison
             event_start_utc = dt_util.as_utc(event_start)
