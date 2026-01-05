@@ -50,12 +50,11 @@ class WasteCalendarEntity(CalendarEntity):
 
             if next_date:
                 next_collection = next_date[0]
-                # Create date for all-day event
+                # All-day events use date objects (not datetime)
                 return CalendarEvent(
                     start=next_collection,
                     end=next_collection,
                     summary=f"Wywóz: {self.schedule.name}",
-                    all_day=True,
                 )
         except Exception:
             return None
@@ -87,7 +86,6 @@ class WasteCalendarEntity(CalendarEntity):
                             start=collection_date,
                             end=collection_date,
                             summary=f"Wywóz: {self.schedule.name}",
-                            all_day=True,
                         )
                     )
 
