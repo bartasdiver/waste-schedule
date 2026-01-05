@@ -46,9 +46,12 @@ class WasteCalendarEntity(CalendarEntity):
 
         if next_date:
             next_collection = next_date[0]
+            # Create timezone-aware datetime
+            event_start = dt_util.start_of_local_day(next_collection)
+            event_end = dt_util.end_of_local_day(next_collection)
             return CalendarEvent(
-                start=dt_util.as_utc(datetime.combine(next_collection, datetime.min.time())),
-                end=dt_util.as_utc(datetime.combine(next_collection, datetime.max.time())),
+                start=dt_util.as_utc(event_start),
+                end=dt_util.as_utc(event_end),
                 summary=f"Wywóz: {self.schedule.name}",
             )
         return None
@@ -67,15 +70,20 @@ class WasteCalendarEntity(CalendarEntity):
 
         events = []
         for collection_date in all_dates:
-            event_start = datetime.combine(collection_date, datetime.min.time())
-            event_end = datetime.combine(collection_date, datetime.max.time())
+            # Create timezone-aware datetime using HA's default timezone
+            event_start = dt_util.start_of_local_day(collection_date)
+            event_end = dt_util.end_of_local_day(collection_date)
+
+            # Convert to UTC for comparison
+            event_start_utc = dt_util.as_utc(event_start)
+            event_end_utc = dt_util.as_utc(event_end)
 
             # Check if event is within the requested range
-            if event_start <= end_date and event_end >= start_date:
+            if event_start_utc <= end_date and event_end_utc >= start_date:
                 events.append(
                     CalendarEvent(
-                        start=dt_util.as_utc(event_start),
-                        end=dt_util.as_utc(event_end),
+                        start=event_start_utc,
+                        end=event_end_utc,
                         summary=f"Wywóz: {self.schedule.name}",
                     )
                 )

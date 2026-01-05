@@ -1,0 +1,121 @@
+# RÓŻNE WERSJE KART DASHBOARD
+
+# ============================================
+# OPCJA 1: Prosta karta z wszystkimi encjami
+# ============================================
+type: entities
+title: 🗑️ Harmonogram wywozu odpadów
+entities:
+  - entity: sensor.odpady_resztkowe_nastepna_data
+    icon: mdi:trash-can
+    name: Resztkowe - następny wywóz
+  - entity: sensor.odpady_resztkowe_dni_do_wywozu
+    icon: mdi:calendar-clock
+    name: Dni do wywozu resztkowych
+  - entity: sensor.plastik_nastepna_data
+    icon: mdi:recycle
+    name: Plastik - następny wywóz
+  - entity: sensor.plastik_dni_do_wywozu
+    icon: mdi:calendar-clock
+    name: Dni do wywozu plastiku
+  - entity: sensor.papier_i_szklo_nastepna_data
+    icon: mdi:package-variant
+    name: Papier/szkło - następny wywóz
+  - entity: sensor.papier_i_szklo_dni_do_wywozu
+    icon: mdi:calendar-clock
+    name: Dni do wywozu papieru/szkła
+
+
+# ============================================
+# OPCJA 2: Karta z kolorowymi badge (licznikami)
+# ============================================
+type: glance
+title: 🗑️ Wywóz odpadów
+show_name: true
+show_icon: true
+show_state: true
+columns: 3
+entities:
+  - entity: sensor.odpady_resztkowe_dni_do_wywozu
+    name: Resztkowe
+    icon: mdi:trash-can
+  - entity: sensor.plastik_dni_do_wywozu
+    name: Plastik
+    icon: mdi:recycle
+  - entity: sensor.papier_i_szklo_dni_do_wywozu
+    name: Papier/Szkło
+    icon: mdi:package-variant
+
+
+# ============================================
+# OPCJA 3: Karta typu "Masonry Grid" (rozszerzona)
+# ============================================
+# Wymaga: HACS → Frontend → "Masonry Layout" lub "Card Mod"
+type: custom:masonry-layout
+layout_type: masonry
+layout_options:
+  width: 300
+cards:
+  - type: entities
+    title: 🗑️ Odpady resztkowe
+    entities:
+      - entity: sensor.odpady_resztkowe_nastepna_data
+        name: Data
+      - entity: sensor.odpady_resztkowe_dni_do_wywozu
+        name: Za ile dni
+
+  - type: entities
+    title: ♻️ Plastik
+    entities:
+      - entity: sensor.plastik_nastepna_data
+        name: Data
+      - entity: sensor.plastik_dni_do_wywozu
+        name: Za ile dni
+
+  - type: entities
+    title: 📦 Papier i szkło
+    entities:
+      - entity: sensor.papier_i_szklo_nastepna_data
+        name: Data
+      - entity: sensor.papier_i_szklo_dni_do_wywozu
+        name: Za ile dni
+
+
+# ============================================
+# OPCJA 4: Z kalendarzem
+# ============================================
+type: vertical-stack
+cards:
+  - type: glance
+    title: 🗑️ Nadchodzące wywozy
+    show_state: true
+    columns: 3
+    entities:
+      - entity: sensor.odpady_resztkowe_dni_do_wywozu
+        name: Resztkowe
+        icon: mdi:trash-can
+      - entity: sensor.plastik_dni_do_wywozu
+        name: Plastik
+        icon: mdi:recycle
+      - entity: sensor.papier_i_szklo_dni_do_wywozu
+        name: Papier/Szkło
+        icon: mdi:package-variant
+
+  - type: calendar
+    title: 📅 Kalendarz wywozu
+    entities:
+      - calendar.odpady_resztkowe_harmonogram
+      - calendar.plastik_harmonogram
+      - calendar.papier_i_szklo_harmonogram
+
+
+# ============================================
+# OPIS JAK DODAĆ DO DASHBOARD:
+# ============================================
+# 1. Otwórz swój dashboard w Home Assistant
+# 2. Kliknij "..." (trzy kropki) w prawym górnym rogu → "Edit dashboard"
+# 3. Kliknij "+ Add card" w dolnym prawym rogu
+# 4. Wybierz typ karty (np. "Entities" lub "Glance")
+# 5. Kliknij "Show code editor" (ikona <> w prawym górnym rogu karty)
+# 6. Wklej jedną z powyższych konfiguracji
+# 7. Kliknij "Save"

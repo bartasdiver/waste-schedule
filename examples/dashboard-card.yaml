@@ -1,0 +1,42 @@
+# Gotowa karta do dashboardu Home Assistant
+# Wklej to do swojego dashboard (Edit dashboard → Add card → Manual configuration → Choose type: entities)
+
+type: entities
+title: 🗑️ Harmonogram wywozu odpadów
+show_header_toggle: false
+entities:
+  # Resztkowe
+  - type: custom:hui-element
+    card_type: divider
+  - type: section
+    label: Odpady resztkowe
+  - entity: sensor.odpady_resztkowe_nastepna_data
+    name: Następny wywóz
+    icon: mdi:trash-can
+  - entity: sensor.odpady_resztkowe_dni_do_wywozu
+    name: Dni do wywozu
+    icon: mdi:calendar-clock
+
+  # Plastik
+  - type: custom:hui-element
+    card_type: divider
+  - type: section
+    label: Plastik
+  - entity: sensor.plastik_nastepna_data
+    name: Następny wywóz
+    icon: mdi:recycle
+  - entity: sensor.plastik_dni_do_wywozu
+    name: Dni do wywozu
+    icon: mdi:calendar-clock
+
+  # Papier i szkło
+  - type: custom:hui-element
+    card_type: divider
+  - type: section
+    label: Papier i szkło
+  - entity: sensor.papier_i_szklo_nastepna_data
+    name: Następny wywóz
+    icon: mdi:package-variant
+  - entity: sensor.papier_i_szklo_dni_do_wywozu
+    name: Dni do wywozu
+    icon: mdi:calendar-clock
