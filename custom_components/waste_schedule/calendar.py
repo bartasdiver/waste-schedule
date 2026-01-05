@@ -1,4 +1,5 @@
 """Calendar platform for Waste Schedule integration."""
+import logging
 from datetime import date, datetime, timedelta
 from typing import List
 
@@ -10,6 +11,8 @@ from homeassistant.util import dt as dt_util
 
 from .const import DOMAIN, WASTE_SCHEDULES, WasteSchedule
 from .sensor import get_all_collection_dates
+
+_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
@@ -65,26 +68,30 @@ class WasteCalendarEntity(CalendarEntity):
         end_date: datetime,
     ) -> List[CalendarEvent]:
         """Return calendar events within date range."""
-        today = date.today()
-        all_dates = get_all_collection_dates(
-            self.schedule.start_date, self.schedule.frequency_weeks, today, months_ahead=12
-        )
+        try:
+            today = date.today()
+            all_dates = get_all_collection_dates(
+                self.schedule.start_date, self.schedule.frequency_weeks, today, months_ahead=12
+            )
 
-        events = []
-        for collection_date in all_dates:
-            # Convert datetime dates to dates for comparison
-            start = start_date.date() if isinstance(start_date, datetime) else start_date
-            end = end_date.date() if isinstance(end_date, datetime) else end_date
+            events = []
+            for collection_date in all_dates:
+                # Convert datetime to date for comparison
+                start = start_date.date() if hasattr(start_date, 'date') else start_date
+                end = end_date.date() if hasattr(end_date, 'date') else end_date
 
-            # Check if event is within the requested range
-            if start <= collection_date <= end:
-                events.append(
-                    CalendarEvent(
-                        start=collection_date,
-                        end=collection_date,
-                        summary=f"Wywóz: {self.schedule.name}",
-                        all_day=True,
+                # Check if event is within the requested range
+                if start <= collection_date <= end:
+                    events.append(
+                        CalendarEvent(
+                            start=collection_date,
+                            end=collection_date,
+                            summary=f"Wywóz: {self.schedule.name}",
+                            all_day=True,
+                        )
                     )
-                )
 
-        return events
+            return events
+        except Exception as e:
+            _LOGGER.error(f"Error getting events for {self.schedule.name}: {e}")
+            return []
